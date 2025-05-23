@@ -7,6 +7,7 @@ docker-compose up --build
 **Und hiermit stoppen:**
 ```bash
 docker-compose down
+```
 
 ## 🐳 Docker-Container starten / stoppen
 
@@ -36,6 +37,7 @@ Deaktivieren: ```deactivate```
 Spring in den Backend-Container rein:
 bash```
 docker-compose exec backend bash
+
 ```
 
 Dann im Container:
