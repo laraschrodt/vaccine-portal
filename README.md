@@ -41,4 +41,4 @@ docker-compose exec backend bash
 Dann im Container:
 bash```
 python manage.py migrate
-```
+
