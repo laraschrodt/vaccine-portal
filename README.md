@@ -2,9 +2,9 @@
 
 ## Docker starten
 ```bash
-docker-compose down
+docker-compose up --build
 ```
 **Und hiermit stoppen:**
 ```bash
-docker-compose up --build
+docker-compose down
 ```
