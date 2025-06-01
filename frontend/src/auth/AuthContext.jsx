@@ -1,34 +1,48 @@
 import { createContext, useContext, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { getCsrf } from "../utils/csrf";
 
-export const AuthContext = createContext();
+const AuthCtx = createContext();
+export const useAuth = () => useContext(AuthCtx);
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  const login = async (email, password) => {
-    try {
-      await axios.get("/api/users/csrf/");
-      const response = await axios.post("/api/users/login/", { email, password });
-      setUser(response.data);
-      return { success: true, user: response.data };
-    } catch (err) {
-      return { success: false, error: err.response?.data?.detail || "Fehler beim Login" };
+  const login = async (username, password) => {
+    const res = await fetch("/api/login/", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrf(),
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!res.ok) throw new Error("Bad credentials");
+    const data = await res.json();
+    setUser({ username, groups: data.groups });
+
+    if (data.groups.includes("Patient")) {
+      navigate("/patient/dashboard");
+    }
+    // if (data.groups.includes("ClinicStaff")) navigate("/clinic/dashboard"); // Noch nicht implementiert
+    // else if (data.groups.includes("Admin"))   navigate("/admin/dashboard");  // Noch nicht implementiert
+    else if (data.groups.length === 0) {
+      navigate("/");
     }
   };
 
-  const logout = async () => {
-    await axios.post("/api/users/logout/");
+  const logout = () => {
+    fetch("/api/logout/", { method: "POST", credentials: "include" });
     setUser(null);
+    navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthCtx.Provider value={{ user, login, logout }}>
       {children}
-    </AuthContext.Provider>
+    </AuthCtx.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

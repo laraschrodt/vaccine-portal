@@ -43,7 +43,9 @@ docker-compose exec backend bash
 
 Dann im Container:
 bash```
-python manage.py migrate
+docker-compose exec backend python manage.py makemigrations
+docker-compose exec backend python manage.py migrate
+````
 
 ## Etwas istallieren
 In Container rein springen:
