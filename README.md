@@ -33,6 +33,7 @@ Deaktivieren: ```deactivate```
 
 **Server starten:** ```python backend/manage.py runserver```
 
+# In einem Container etwas installlieren oder ändern
 ## Migrations machen
 Spring in den Backend-Container rein:
 bash```
@@ -42,5 +43,12 @@ docker-compose exec backend bash
 
 Dann im Container:
 bash```
-python manage.py migrate
+docker-compose exec backend python manage.py makemigrations
+docker-compose exec backend python manage.py migrate
+````
 
+## Etwas istallieren
+In Container rein springen:
+bash ```
+docker-compose exec frontend sh
+```
